@@ -93,7 +93,7 @@ class ICMP_Echo():
 
 def ping(target: str) -> float:
     """Ping an address and return the number of seconds as a float that the ping took."""
-    Echo = ICMP_Echo(icmp_type=ICMP_Echo_Type.REPLY)
+    Echo = ICMP_Echo()
     response = Echo.sendto(target)
     if response is not None:
         return response.response_time
