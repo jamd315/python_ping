@@ -1,10 +1,7 @@
 from enum import Enum
-import io
 import socket
 import struct
 import time
-
-from numpy import rec
 
 
 class ICMP_Echo_Type(Enum):
