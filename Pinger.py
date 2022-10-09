@@ -77,13 +77,13 @@ class ICMP_Echo():
         sock.connect((dest, 0))
         icmp_payload = bytes(self)
         # Must just be .send and .recv in the timing block
-        t1 = time.time()
+        t1 = time.perf_counter()
         sock.send(icmp_payload)
         try:
             received = sock.recv(2 ** 16)
         except TimeoutError as e:
             return None
-        t2 = time.time()
+        t2 = time.perf_counter()
         received = received[20:]  # Snip off the first 20 bytes, they're the IP header from the raw socket I think
         # End of timing block
         response = ICMP_Echo.from_bytes(received)
