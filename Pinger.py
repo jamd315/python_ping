@@ -74,7 +74,12 @@ class ICMP_Echo():
             print(f"[Warning] Expected to send an ICMP Echo, got {self.icmp_type}.")
         sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
         sock.settimeout(4)  # TODO this might be something that should be configurable
-        sock.connect((dest, 0))
+        try:
+            sock.connect((dest, 0))
+        except socket.gaierror:
+            return None
+        except OSError:
+            return None
         icmp_payload = bytes(self)
         # Must just be .send and .recv in the timing block
         t1 = time.perf_counter()
@@ -82,6 +87,8 @@ class ICMP_Echo():
         try:
             received = sock.recv(2 ** 16)
         except TimeoutError as e:
+            return None
+        except socket.timeout:  # Somehow escapes the first except block in rare edge cases?
             return None
         t2 = time.perf_counter()
         received = received[20:]  # Snip off the first 20 bytes, they're the IP header from the raw socket I think
